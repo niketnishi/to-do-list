@@ -8,3 +8,48 @@ body {
     width: 100%;
     background-color: #f4f4f4;
 }
+button, input {
+    outline: none;
+}
+.heading {
+    font-size: 100px;
+    text-align: center;
+    color: #af2f2f26;
+    margin: auto;
+    font-weight: normal;
+}
+.todo {
+    width: 30%;
+    height: auto;
+    overflow-x: hidden;
+    overflow-y: auto;
+    margin: auto;
+    background-color: #ffffff;
+    border-radius: 5px;
+    border: 1px solid #e6e6e6;
+    box-shadow: 1px 2px 4px rgba(0, 0, 0, .5);
+}
+.todo button {
+    float:left;
+    font-size:2vw;
+    border: none;
+    background-color: #ffffff;
+    border-right: 2px solid #e6e6e6;
+    opacity: 0.4;
+    transition: 0.5;
+}
+button i {
+    margin: 5px;
+    color: #D6BABA;
+}
+.todo button:hover {
+    cursor: pointer;
+    opacity: 1;
+}
+#todo_input {
+    width: 91%;
+    height: 50px;
+    padding: 5px;
+    font-size: 20px;
+    border: none;
+}
