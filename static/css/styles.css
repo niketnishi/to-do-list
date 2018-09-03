@@ -29,7 +29,7 @@ button, input {
     border: 1px solid #e6e6e6;
     box-shadow: 1px 2px 4px rgba(0, 0, 0, .5);
 }
-.todo button {
+.todo > button {
     float:left;
     font-size:2vw;
     border: none;
@@ -42,7 +42,7 @@ button i {
     margin: 5px;
     color: #D6BABA;
 }
-.todo button:hover {
+button:hover {
     cursor: pointer;
     opacity: 1;
 }
@@ -52,4 +52,26 @@ button i {
     padding: 5px;
     font-size: 20px;
     border: none;
+}
+#todo_item {
+    font-size : 25px;
+    border: 1px solid #e6e6e6;
+    opacity: 0.4;
+}
+#todo_item button {
+    float: right;
+    font-size:2vw;
+    border: none;
+    background-color: #ffffff;
+}
+#todo_item input {
+    zoom: 1.5;
+    margin: 10px;
+    border-right: 2px solid #e6e6e6;
+}
+#todo_item > div {
+    border-top: 1px solid #e6e6e6;
+}
+#todo_item span {
+    overflow: auto;
 }
