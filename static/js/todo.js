@@ -1,27 +1,18 @@
-//let data = localStorage.getItem('listOfNotes') ? JSON.parse(localStorage.getItem('listOfNotes')) : [];
-//
-//localStorage.setItem('listOfNotes', JSON.stringify(data));
-//var noteData = JSON.parse(localStorage.getItem('listOfNotes'));
-
-
 // Creating localStorage which will not change on closing window
-var noteData;
-if (localStorage.getItem('listOfNotes')) {
-    noteData = JSON.parse(localStorage.getItem('listOfNotes'));
-} else {
-    noteData = [];
-}
+let data = localStorage.getItem('listOfNotes') ? JSON.parse(localStorage.getItem('listOfNotes')) : [];
+localStorage.setItem('listOfNotes', JSON.stringify(data));
 
+var noteData = JSON.parse(localStorage.getItem('listOfNotes'));
 localStorage.setItem("listOfNotes", JSON.stringify(noteData));
 
-
+// Creating an event on page loading
 document.addEventListener('DOMContentLoaded', function() {
     createAllNote();
     document.querySelector('#todo_input').onkeypress = function() {
-        storeNote(event)
+        storeNote(event);
     }
     document.querySelector('#select_all').onclick = function() {
-        selectAll()
+        selectAll();
     }
 });
 
