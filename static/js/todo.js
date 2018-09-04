@@ -9,7 +9,6 @@ var noteData;
 if (localStorage.getItem('listOfNotes')) {
     noteData = JSON.parse(localStorage.getItem('listOfNotes'));
 } else {
-    console.log('i am in else');
     noteData = [];
 }
 
@@ -29,12 +28,11 @@ document.addEventListener('DOMContentLoaded', function() {
 // Storing the notes to localStorage
 function storeNote(eventObj) {
     if(eventObj.keyCode == 13) {
-        var note = document.querySelector('#todo_input').value;
-        if (note.length > 0) {
-            let note = document.querySelector('#todo_input').value;
-            createStructure(note);
-            let arrayLen = noteData.length;
-            noteData[arrayLen] = note;
+        var inputText = document.querySelector('#todo_input').value;
+        if (inputText.length > 0) {
+            let dataObj = {'text': inputText, 'is_done': false};
+            noteData.push(dataObj);
+            createAllNote();
             document.querySelector('#todo_input').value = "";
             localStorage.setItem("listOfNotes", JSON.stringify(noteData));
         } else {
@@ -42,29 +40,67 @@ function storeNote(eventObj) {
         }
     }
 }
+
+// Function to create all the to_do items on loading the webpage
+function createAllNote() {
+    deleteAllNote();
+    noteData.forEach(obj =>{
+        createStructure(obj.text, obj.is_done);
+        let textInputObj = document.querySelector('#todo_item').lastChild.childNodes[1];
+        scratchText(textInputObj);
+    });
+}
+
+// Deleting all the notes from local storage
+function deleteAllNote() {
+    let node = document.querySelector('#todo_item');
+    while (node.hasChildNodes()) {
+        node.removeChild(node.lastChild);
+    }
+}
+
 // Creating structure for the notes entered
-function createStructure(note) {
+function createStructure(note, status) {
     let newToDo = document.createElement("div");
+
     newToDo.innerHTML = '<button type="button" onclick="removeNote(this)"><i class="fa fa-close"></i></button>';
+
     let checkboxButton = document.createElement("input");
     checkboxButton.type = "checkbox";
-    let inputData = document.createElement("span");
-    inputData.textContent = note;
+    updateStatusOfCheckbox(checkboxButton, status);
     checkboxButton.addEventListener('click', function() {              //adding event listener for checkbox
-        scratchText(this)
+        updateStatus(this);
     });
     newToDo.appendChild(checkboxButton);
+
+    let inputData = document.createElement("span");
+    inputData.textContent = note;
     newToDo.appendChild(inputData);
-//    newToDo.innerHTML = '<i class="fa fa-close"></i><input type="checkbox"><span>${`note`}</span>';
+
     document.querySelector('#todo_item').appendChild(newToDo);
 }
 
-// Invoking button action for marking all the checkbox true or false
-function selectAll() {
-    document.querySelectorAll('#todo_item input').forEach(item => {
-        item.checked = true;
-        item.parentElement.childNodes[2].style.textDecoration = "line-through";
+// Upadate checkbox status while creation
+function updateStatusOfCheckbox(obj, status) {
+    if (status) {
+        obj.checked = true;
+    } else {
+        obj.checked = false;
+    }
+}
+
+function updateStatus(spanObj) {
+    let spanText = spanObj.parentElement.childNodes[2].innerHTML;
+    noteData.forEach(obj =>{
+        if (obj.text == spanText && spanObj.checked) {
+            obj.is_done = true;
+        }
+        else if (obj.text == spanText && !spanObj.checked) {
+            obj.is_done = false;
+        }
     });
+    localStorage.setItem("listOfNotes", JSON.stringify(noteData));
+    scratchText(spanObj);
 }
 
 // Function to scratch the text based on checkbox
@@ -77,17 +113,28 @@ function scratchText(eleObj) {
     }
 }
 
-// Close button Action
-function removeNote(item) {
-    item.parentElement.parentElement.removeChild(item.parentElement);
-    let itemIndex = noteData.indexOf(item.parentElement.childNodes[2].innerHTML);
-    noteData.splice(itemIndex, 1);
+// Invoking button action for marking all the checkbox true or false
+function selectAll() {
+    document.querySelectorAll('#todo_item input').forEach(item => {
+        item.checked = true;
+        item.parentElement.childNodes[2].style.textDecoration = "line-through";
+    });
+    noteData.forEach(obj =>{
+        obj.is_done = true;
+    });
     localStorage.setItem("listOfNotes", JSON.stringify(noteData));
 }
 
-// Function to create all the to_do items on loading the webpage
-function createAllNote() {
-    noteData.forEach(note =>{
-            createStructure(note)
-        });
+// Close button Action
+function removeNote(item) {
+    item.parentElement.parentElement.removeChild(item.parentElement);
+    let itemText = item.parentElement.childNodes[2].innerHTML;
+    let itemIndex;
+    noteData.forEach(obj =>{
+        if (itemText == obj.text) {
+            itemIndex = noteData.indexOf(obj);
+        }
+    });
+    noteData.splice(itemIndex, 1);
+    localStorage.setItem("listOfNotes", JSON.stringify(noteData));
 }
