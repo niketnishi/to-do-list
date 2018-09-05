@@ -151,12 +151,9 @@ function selectAll() {
 
 // Checking the status of each element in order to select and deselect all notes
 function checkCheckbox(){
-    let numChk = 0;
     let numUnChk = 0;
     noteData.forEach(obj =>{
-        if (obj.is_done) {
-            numChk = numChk + 1;
-        } else {
+        if (!obj.is_done) {
             numUnChk = numUnChk + 1;
         }
     });
