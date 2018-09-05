@@ -53,6 +53,15 @@ function deleteAllNote() {
 // Creating structure for the notes entered
 function createStructure(note, status) {
     let newToDo = document.createElement("div");
+    newToDo.setAttribute('draggable', 'true');
+    newToDo.addEventListener('dragstart', function(e) {
+        startDrag(e, this);
+    }, false);
+    newToDo.addEventListener('dragenter', function(event) {event.preventDefault()}, false);
+    newToDo.addEventListener('dragover', function(event) {event.preventDefault()}, false);
+    newToDo.addEventListener('drop', function(e) {
+        dropped(e, this);
+    }, false);
 
     newToDo.innerHTML = '<button type="button" onclick="removeNote(this)"><i class="fa fa-close"></i></button>';
 
@@ -128,4 +137,29 @@ function removeNote(item) {
     });
     noteData.splice(itemIndex, 1);
     localStorage.setItem("listOfNotes", JSON.stringify(noteData));
+}
+
+function startDrag(eventObj, elementObj) {
+    let dragCode = elementObj.childNodes[2].innerHTML;
+    eventObj.dataTransfer.setData('dragElement', dragCode);
+}
+
+function dropped(eventObj, elementObj) {
+    let dropCode = elementObj.childNodes[2].innerHTML;
+    let dragCode = eventObj.dataTransfer.getData('dragElement');
+    let dropIndex;
+    let dragIndex;
+    noteData.forEach(obj =>{
+        if (obj.text == dropCode) {
+            dropIndex = noteData.indexOf(obj);
+        }
+        if (obj.text == dragCode) {
+            dragIndex = noteData.indexOf(obj);
+        }
+    });
+    let temp = noteData[dragIndex];
+    noteData[dragIndex] = noteData[dropIndex];
+    noteData[dropIndex] = temp;
+    localStorage.setItem("listOfNotes", JSON.stringify(noteData));
+    createAllNote();
 }
