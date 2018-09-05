@@ -21,14 +21,34 @@ function storeNote(eventObj) {
     if(eventObj.keyCode == 13) {
         var inputText = document.querySelector('#todo_input').value;
         if (inputText.length > 0) {
-            let dataObj = {'text': inputText, 'is_done': false};
-            noteData.push(dataObj);
-            createAllNote();
-            document.querySelector('#todo_input').value = "";
-            localStorage.setItem("listOfNotes", JSON.stringify(noteData));
+            if (findDuplicate(inputText)) {
+                let dataObj = {'text': inputText, 'is_done': false};
+                noteData.push(dataObj);
+                createAllNote();
+                document.querySelector('#todo_input').value = "";
+                localStorage.setItem("listOfNotes", JSON.stringify(noteData));
+            } else {
+                alert('This note has already been made!!!');
+                document.querySelector('#todo_input').value = "";
+            }
         } else {
             alert("Please, enter anything to remenber");
         }
+    }
+}
+
+// Check for duplicate entry while recording notes
+function findDuplicate(inputText) {
+    let flag = 0;
+    noteData.forEach(obj =>{
+        if (obj.text == inputText) {
+            flag = 1;
+        }
+    });
+    if (flag == 1) {
+        return false;
+    } else {
+        return true;
     }
 }
 
@@ -89,6 +109,7 @@ function updateStatusOfCheckbox(obj, status) {
     }
 }
 
+// This gets triggered when click event occurs on checkbox
 function updateStatus(spanObj) {
     let spanText = spanObj.parentElement.childNodes[2].innerHTML;
     noteData.forEach(obj =>{
@@ -115,19 +136,40 @@ function scratchText(eleObj) {
 
 // Invoking button action for marking all the checkbox true or false
 function selectAll() {
-    document.querySelectorAll('#todo_item input').forEach(item => {
-        item.checked = true;
-        item.parentElement.childNodes[2].style.textDecoration = "line-through";
-    });
-    noteData.forEach(obj =>{
-        obj.is_done = true;
-    });
+    if (checkCheckbox()) {
+        noteData.forEach(obj =>{
+            obj.is_done = true;
+        });
+    } else {
+        noteData.forEach(obj =>{
+            obj.is_done = false;
+        });
+    }
     localStorage.setItem("listOfNotes", JSON.stringify(noteData));
+    createAllNote();
+}
+
+// Checking the status of each element in order to select and deselect all notes
+function checkCheckbox(){
+    let numChk = 0;
+    let numUnChk = 0;
+    noteData.forEach(obj =>{
+        if (obj.is_done) {
+            numChk = numChk + 1;
+        } else {
+            numUnChk = numUnChk + 1;
+        }
+    });
+    if (numUnChk > 0) {
+        return true;
+    } else {
+        return false;
+    }
 }
 
 // Close button Action
 function removeNote(item) {
-    item.parentElement.parentElement.removeChild(item.parentElement);
+//    item.parentElement.parentElement.removeChild(item.parentElement);
     let itemText = item.parentElement.childNodes[2].innerHTML;
     let itemIndex;
     noteData.forEach(obj =>{
@@ -137,6 +179,7 @@ function removeNote(item) {
     });
     noteData.splice(itemIndex, 1);
     localStorage.setItem("listOfNotes", JSON.stringify(noteData));
+    createAllNote();
 }
 
 // Function for dragging divs

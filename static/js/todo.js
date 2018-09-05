@@ -89,6 +89,7 @@ function updateStatusOfCheckbox(obj, status) {
     }
 }
 
+// This gets triggered when click event occurs on checkbox
 function updateStatus(spanObj) {
     let spanText = spanObj.parentElement.childNodes[2].innerHTML;
     noteData.forEach(obj =>{
